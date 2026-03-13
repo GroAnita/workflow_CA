@@ -11,10 +11,6 @@ test('user can log in with valid credentials', async ({ page }) => {
 test('error msg when invalid credentials', async ({ page }) => {
   await page.goto('/login/index.html');
 
-  await page.evaluate(() => {
-    localStorage.clear();
-    sessionStorage.clear();
-  });
   await page.fill('input[name="email"]', 'wrong-user@stud.noroff.no');
   await page.fill('input[name="password"]', 'wrongPassword123');
 
@@ -23,5 +19,7 @@ test('error msg when invalid credentials', async ({ page }) => {
   // wait for the UI to update
   await page.waitForTimeout(1000);
 
-  await expect(page).toHaveURL(/\/login\/index\.html/);
+  await expect(page.locator('#message-container')).toContainText(
+    'Invalid email or password'
+  );
 });
